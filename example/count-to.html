@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CountTo Example</title>
+</head>
+
+<body>
+  <div id="root">
+    <div style="width: 200px; text-align: right;">
+      <span v-text="num > max ? '+' : ''"></span>
+      <count-to
+        id="counter"
+        :to="num"
+        duration="200"
+        interval="10"
+        :max="max"
+        use-locale-format="true"
+        precision="3"
+      ></count-to>
+    </div>
+    <div v-text="num"></div>
+    <div>
+      <form @submit.prevent="runChange">
+        <input v-model="value" />
+        <div style="color: orange;" v-text="warnMessage"></div>
+        <button>Change</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../src/count-to.js">
+  </script>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    const {
+      createApp, ref, KeepAlive
+    } = Vue;
+
+    createApp({
+      components: {
+        KeepAlive,
+      },
+      setup() {
+        const defaultValue = '0'
+        const num = ref(defaultValue);
+        const value = ref(defaultValue);
+        const max = 9999.999;
+
+        const warnMessage = ref('');
+
+        const runChange = () => {
+          warnMessage.value = '';
+          if (isNaN(Number(value.value))) {
+            warnMessage.value = 'value must be number'
+            return;
+          }
+          num.value = value.value;
+        }
+        return {
+          num,
+          max,
+          value,
+          warnMessage,
+          runChange,
+        }
+      }
+    }).mount('#root')
+  </script>
+</body>
+
+</html>
